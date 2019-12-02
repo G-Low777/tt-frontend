@@ -1,0 +1,27 @@
+directive @client(always: Boolean) on FIELD
+
+enum TaskType {
+  "Ошибочная"
+  ERROR
+  "Правильная"
+  CORRECT
+  "Исправленная"
+  SOLVED
+}
+
+extend type Task {
+  "Тип задачи"
+  type: TaskType!
+}
+
+extend type Query {
+  "Возвращает токен авторизации, если он есть"
+  getToken: Token
+}
+
+extend type Mutation {
+  "Сохраняет токен авторизации в браузере"
+  saveToken(token: String!): Token!
+  "Выход из системы"
+  logout: Token!
+}

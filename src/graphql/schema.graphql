@@ -1,0 +1,60 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Mutation {
+    "Авторизация, возвращает токен доступа при успешной авторизации"
+    auth(
+        #Логин пользователя
+        login: String!,
+        #Пароль пользователя
+        password: String!
+    ): String
+}
+
+type Query {
+    "Возвращает информацию о текущем авторизованном пользователе"
+    me: User
+    "Возвращает список задач"
+    tasks: [Task]
+}
+
+type Task {
+    "Адрес, по которому находится устройство"
+    address: String!
+    "Дата создания задачи"
+    creationTime: Date!
+    "Модель устройства"
+    device: String!
+    "ID устройства"
+    deviceId: Int!
+    "ID задачи в системе"
+    id: Int!
+    "Сообщение от устройства"
+    message: String!
+    "Имя управляющей компании, за которой закреплена квартира с устройством"
+    mf: String!
+    "Номер в системе"
+    number: Int!
+}
+
+type User {
+    "ID пользователя в системе"
+    id: Int!
+    "Логин пользователя"
+    login: String!
+}
+
+enum CacheControlScope {
+    PRIVATE
+    PUBLIC
+}
+
+
+scalar Date
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload

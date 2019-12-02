@@ -1,0 +1,20 @@
+mutation Auth($login: String!, $password: String!) {
+    auth(login: $login, password: $password) {
+        id
+        value
+    }
+}
+
+mutation Logout {
+    logout @client {
+        id
+        value
+    }
+}
+
+mutation SaveToken($token: String!) {
+    saveToken(token: $token) @client {
+        id
+        value
+    }
+}

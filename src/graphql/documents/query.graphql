@@ -1,0 +1,28 @@
+query getTasks {
+    tasks {
+        id
+        number
+        address
+        mf
+        message
+        device
+        deviceId
+        creationTime
+        type @client
+    }
+}
+
+query getMe {
+    me {
+        id
+        login
+    }
+}
+
+
+query GetToken {
+    getToken @client(always: true) {
+        id
+        value
+    }
+}
