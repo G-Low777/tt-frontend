@@ -48,3 +48,26 @@ export const FilterSpoiler = Styled.div`
 export const FilterSpoilerIcon = Styled.img`
   margin-right: 8px;
 `;
+
+export const SearchNSort = Styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+`;
+
+export const Sort = Styled.div`
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 50%;
+`;
+
+export const SelectOptionIcon = Styled.img`
+  margin-right: 4px;
+`;
+
+export const SortBy = Styled.span`
+  margin-right: 8px;
+`;
