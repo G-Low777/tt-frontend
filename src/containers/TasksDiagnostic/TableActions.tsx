@@ -1,11 +1,23 @@
 import React from "react";
-import { Input, Select } from "antd";
+import { Input, Select, Button } from "antd";
 
 import down from "../../assets/vector/down.svg";
 import min from "../../assets/vector/min.svg";
 import max from "../../assets/vector/max.svg";
+import alarm from "../../assets/vector/alarm.svg";
+import comment from "../../assets/vector/comment.svg";
+import ok from "../../assets/vector/ok.svg";
 
-import { FilterSpoiler, FilterSpoilerIcon, SearchNSort, SelectOptionIcon, Sort, SortBy } from "./styles";
+import {
+  ButtonIcon,
+  Buttons, ButtonSpace,
+  FilterSpoiler,
+  FilterSpoilerIcon,
+  SearchNSort,
+  SelectOptionIcon,
+  Sort,
+  SortBy,
+} from "./styles";
 
 const TableActions: React.FC = () => {
   return (
@@ -43,6 +55,13 @@ const TableActions: React.FC = () => {
           </Select>
         </Sort>
       </SearchNSort>
+      <Buttons key="buttons">
+        <Button key="correct"><ButtonIcon key="icon" src={ok} /> Правильно</Button>
+        <ButtonSpace key="space-1" />
+        <Button key="comment"><ButtonIcon key="icon" src={comment} /> Добавить комментарий</Button>
+        <ButtonSpace key="space-2" />
+        <Button key="error"><ButtonIcon key="icon" src={alarm} /> Ошибка</Button>
+      </Buttons>
     </div>
   )
 };

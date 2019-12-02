@@ -71,3 +71,16 @@ export const SelectOptionIcon = Styled.img`
 export const SortBy = Styled.span`
   margin-right: 8px;
 `;
+
+export const Buttons = Styled.div`
+  margin-bottom: 8px;
+`;
+
+export const ButtonSpace = Styled.span`
+  margin-right: 8px;
+`;
+
+export const ButtonIcon = Styled.img`
+  margin-right: 8px;
+  margin-top: -1px;
+`;
