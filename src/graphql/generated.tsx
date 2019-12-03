@@ -35,7 +35,7 @@ export type Mutation = {
   /** Сохраняет токен авторизации в браузере */
   saveToken: Token,
   /** Меняет тип задачи */
-  setTasksType: Array<Task>,
+  setTasksType?: Maybe<Scalars['Boolean']>,
   /** Выход из системы */
   logout: Token,
 };
@@ -53,7 +53,7 @@ export type MutationSaveTokenArgs = {
 
 
 export type MutationSetTasksTypeArgs = {
-  ids: Array<Maybe<Scalars['Int']>>,
+  ids: Array<Scalars['Int']>,
   type: TaskType
 };
 
@@ -87,6 +87,8 @@ export type Task = {
   creationTime: Scalars['Date'],
   /** Тип задачи */
   type: TaskType,
+  /** Дата закрытия задачи */
+  closingTime?: Maybe<Scalars['Date']>,
 };
 
 export enum TaskType {
@@ -154,17 +156,14 @@ export type SaveTokenMutation = (
 );
 
 export type SetTasksTypeMutationVariables = {
-  ids: Array<Maybe<Scalars['Int']>>,
+  ids: Array<Scalars['Int']>,
   type: TaskType
 };
 
 
 export type SetTasksTypeMutation = (
   { __typename?: 'Mutation' }
-  & { setTasksType: Array<(
-    { __typename?: 'Task' }
-    & Pick<Task, 'id' | 'type'>
-  )> }
+  & Pick<Mutation, 'setTasksType'>
 );
 
 export type GetTasksQueryVariables = {};
@@ -174,7 +173,7 @@ export type GetTasksQuery = (
   { __typename?: 'Query' }
   & { tasks: Maybe<Array<(
     { __typename?: 'Task' }
-    & Pick<Task, 'id' | 'number' | 'address' | 'mf' | 'message' | 'device' | 'deviceId' | 'creationTime' | 'type'>
+    & Pick<Task, 'id' | 'number' | 'address' | 'mf' | 'message' | 'device' | 'deviceId' | 'creationTime' | 'type' | 'closingTime'>
   )>> }
 );
 
@@ -318,7 +317,7 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export type MutationResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   auth?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, RequireFields<MutationAuthArgs, 'login' | 'password'>>,
   saveToken?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationSaveTokenArgs, 'token'>>,
-  setTasksType?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationSetTasksTypeArgs, 'ids' | 'type'>>,
+  setTasksType?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationSetTasksTypeArgs, 'ids' | 'type'>>,
   logout?: Resolver<ResolversTypes['Token'], ParentType, ContextType>,
 };
 
@@ -338,6 +337,7 @@ export type TaskResolvers<ContextType = IResolverCtx, ParentType extends Resolve
   deviceId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   creationTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>,
   type?: Resolver<ResolversTypes['TaskType'], ParentType, ContextType>,
+  closingTime?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>,
 };
 
 export type TokenResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
@@ -504,11 +504,8 @@ export type SaveTokenMutationHookResult = ReturnType<typeof useSaveTokenMutation
 export type SaveTokenMutationResult = ApolloReactCommon.MutationResult<SaveTokenMutation>;
 export type SaveTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<SaveTokenMutation, SaveTokenMutationVariables>;
 export const SetTasksTypeDocument = gql`
-    mutation SetTasksType($ids: [Int]!, $type: TaskType!) {
-  setTasksType(ids: $ids, type: $type) @client {
-    id
-    type
-  }
+    mutation SetTasksType($ids: [Int!]!, $type: TaskType!) {
+  setTasksType(ids: $ids, type: $type) @client
 }
     `;
 export type SetTasksTypeMutationFn = ApolloReactCommon.MutationFunction<SetTasksTypeMutation, SetTasksTypeMutationVariables>;
@@ -555,6 +552,7 @@ export const GetTasksDocument = gql`
     deviceId
     creationTime
     type @client
+    closingTime @client
   }
 }
     `;

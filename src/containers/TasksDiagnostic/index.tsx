@@ -1,121 +1,70 @@
-import React, { useState } from "react";
-import { Table, Tabs, Button } from "antd";
-import { map } from "lodash";
-import moment from "moment";
+import React, { useMemo } from "react";
+import { forEach } from 'lodash';
+import { Tabs } from "antd";
 
 import useTitle from "../../hooks/useTitle";
 
-import { Task, useGetTasksQuery } from "../../graphql/generated";
+import { GetTasksQuery, Task, TaskType, useGetTasksQuery } from '../../graphql/generated';
 
-import TableActions from "./TableActions";
-import { IProps } from "./types";
-import { Container, TabLine, StackText, TopText, BottomText, RowText } from "./styles";
-import ContextMenu from "./ContextMenu";
+import { Container, TabLine } from "./styles";
+import { IProps, TParsedTasks, TTableTask } from './types';
+import Table from "./Table";
 
 const TabPane = Tabs.TabPane;
-const columns = [
-  {
-    title: "№ / ID",
-    render(text: any, record: Task) {
-      return (
-        <StackText key="stack">
-          <TopText key="top">{record.id}</TopText>
-          <BottomText key="bottom">{record.number}</BottomText>
-        </StackText>
-      );
-    }
-  },
-  {
-    title: "Адрес",
-    render(text: any, record: Task) {
-      return (
-        <StackText key="stack">
-          <TopText key="top">{record.address}</TopText>
-          <BottomText key="bottom">{record.mf}</BottomText>
-        </StackText>
-      );
-    }
-  },
-  {
-    title: "Название прибора",
-    render(text: any, record: Task) {
-      return (
-        <StackText key="stack">
-          <TopText key="top">{record.device} ({record.deviceId})</TopText>
-          <BottomText key="bottom">{record.message}</BottomText>
-        </StackText>
-      );
-    }
-  },
-  {
-    title: "Дата создания/закрытия",
-    render(text: any, record: Task) {
-      const creationTime = moment(record.creationTime);
 
-      return (
-        <StackText key="stack">
-          <RowText key="creation-time">
-            <TopText key="top">{creationTime.format("DD.MM.YYYY")}</TopText>
-            <BottomText key="bottom">{creationTime.format("HH:mm:ss")}</BottomText>
-          </RowText>
-        </StackText>
-      );
-    }
-  },
-  {
-    title: "",
-    render(text: any, record: Task) {
-      return (
-        <ContextMenu key="context-menu" task={record} />
-      );
-    }
+function parseTasks(tasksQuery?: GetTasksQuery, type?: TaskType): TParsedTasks {
+  const parsedTasks: TParsedTasks = {
+    all: [],
+    wrong: [],
+    correct: [],
+    solved: [],
+  };
+
+  if (!tasksQuery || !tasksQuery.tasks || tasksQuery.tasks.length === 0) {
+    return parsedTasks;
   }
-];
 
-function getTasks(tasks: Task[]): (Task & { key: string })[] {
-  return map<Task, Task & { key: string }>(tasks, task => ({
-    ...task,
-    key: `${task.__typename}:${task.id}`,
-  }))
+  forEach<Task>(tasksQuery.tasks , task => {
+    const parsedTask: TTableTask = {
+      ...task,
+      key: `${task.__typename}:${task.id}`,
+    };
+
+    parsedTasks.all.push(parsedTask);
+    switch (task.type) {
+      case (TaskType.Error): parsedTasks.wrong.push(parsedTask); break;
+      case (TaskType.Correct): parsedTasks.correct.push(parsedTask); break;
+      case (TaskType.Solved): parsedTasks.solved.push(parsedTask); break;
+    }
+  });
+
+  return parsedTasks;
 }
 
 const TaskDiagnostic: React.FC<IProps> = props => {
   useTitle(props.route);
-  const tasks = useGetTasksQuery({ fetchPolicy: "cache-and-network" });
-  const [selectedRowKeys, onSelectedRowKeysChange] = useState<string[] | number[]>([]);
-  const parsedTasks = getTasks(tasks.data ? tasks.data.tasks || [] : []);
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectedRowKeysChange,
-  };
+  const tasks = useGetTasksQuery({ fetchPolicy: "cache-and-network"});
+  const parsedTasks = useMemo<TParsedTasks>(() => parseTasks(tasks.data), [tasks.data]);
 
   return (
     <Container key="container">
       <TabLine key="tab-line" />
       <Tabs key="tabs" defaultActiveKey="all" size="large">
-        <TabPane key="all" tab={`Все задачи (${parsedTasks.length})`}>
-          <TableActions key="table-actions" />
-          <Table<Task>
-            key="table"
-            rowSelection={rowSelection}
-            columns={columns}
-            size="middle"
-            loading={tasks.loading}
-            dataSource={parsedTasks}
-          />
+        <TabPane key="all" tab={`Все задачи (${parsedTasks.all.length})`}>
+          <Table key="table" tasks={parsedTasks.all} loading={tasks.loading} />
         </TabPane>
-        <TabPane key="wrong" tab={`Ошибочные`}>
-          <TableActions key="table-actions" />
+        <TabPane key="wrong" tab={`Ошибочные (${parsedTasks.wrong.length})`}>
+          <Table key="table" tasks={parsedTasks.wrong} loading={tasks.loading} />
         </TabPane>
-        <TabPane key="correct" tab={`Правильные`}>
-          <TableActions key="table-actions" />
+        <TabPane key="correct" tab={`Правильные (${parsedTasks.correct.length})`}>
+          <Table key="table" tasks={parsedTasks.correct} loading={tasks.loading} />
         </TabPane>
-        <TabPane key="resolved" tab={`Исправленные`}>
-          <TableActions key="table-actions" />
+        <TabPane key="resolved" tab={`Исправленные (${parsedTasks.solved.length})`}>
+          <Table key="table" tasks={parsedTasks.solved} loading={tasks.loading} />
         </TabPane>
       </Tabs>
     </Container>
   );
 };
 
-export default TaskDiagnostic;
+export default React.memo(TaskDiagnostic);

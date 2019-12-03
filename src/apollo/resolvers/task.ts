@@ -1,9 +1,8 @@
 import { TaskResolvers, TaskType } from "../../graphql/generated";
 
 const Task: TaskResolvers = {
-  type: () => {
-    return TaskType.Correct;
-  }
+  type: () => TaskType.Correct,
+  closingTime: () => null,
 };
 
 export default Task;

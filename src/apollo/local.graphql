@@ -12,6 +12,8 @@ enum TaskType {
 extend type Task {
   "Тип задачи"
   type: TaskType!
+  "Дата закрытия задачи"
+  closingTime: Date
 }
 
 extend type Query {
@@ -23,7 +25,7 @@ extend type Mutation {
   "Сохраняет токен авторизации в браузере"
   saveToken(token: String!): Token!
   "Меняет тип задачи"
-  setTasksType(ids: [Int]!, type: TaskType!): [Task!]!
+  setTasksType(ids: [Int!]!, type: TaskType!): Boolean
   "Выход из системы"
   logout: Token!
 }

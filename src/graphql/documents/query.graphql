@@ -9,6 +9,7 @@ query getTasks {
         deviceId
         creationTime
         type @client
+        closingTime @client
     }
 }
 

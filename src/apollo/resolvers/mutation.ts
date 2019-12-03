@@ -1,6 +1,6 @@
 import { forEach } from 'lodash';
 
-import { MutationResolvers, Task, TaskTypeFragmentDoc } from '../../graphql/generated';
+import { MutationResolvers, Task, TaskType, TaskTypeFragmentDoc } from '../../graphql/generated';
 
 const Mutation: MutationResolvers = {
   saveToken: (parent, args, { cache }) => {
@@ -15,22 +15,26 @@ const Mutation: MutationResolvers = {
     return token;
   },
   setTasksType: (parent, { ids, type }, { cache, getCacheKey }) => {
-    const data: Task[] = [];
+    const currentTime = (new Date()).toJSON();
 
     forEach(ids, id => {
       const key = getCacheKey({ id, __typename: "Task" }) as string;
       const task = cache.readFragment<Task>({ fragment: TaskTypeFragmentDoc, id: key });
 
       if (task) {
-        const newTask: Task = { ...task, type: type };
+        const newTask: Task = { ...task, id, type: type };
+
+        if (type === TaskType.Solved) {
+          newTask.closingTime = currentTime;
+        } else {
+          newTask.closingTime = null;
+        }
 
         cache.writeData({ id: key, data: newTask });
-
-        data.push(newTask);
       }
     });
 
-    return data;
+    return true;
   },
   logout: async (parent, args, { cache }) => {
     localStorage.removeItem("token");
