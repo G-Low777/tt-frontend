@@ -10,6 +10,7 @@ query getTasks {
         creationTime
         type @client
         closingTime @client
+        comment @client
     }
 }
 
@@ -27,6 +28,6 @@ query GetToken {
     }
 }
 
-fragment taskType on Task {
-    type
+fragment taskId on Task {
+    id
 }

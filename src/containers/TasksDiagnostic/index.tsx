@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
-import { forEach } from 'lodash';
+import { forEach } from "lodash";
 import { Tabs } from "antd";
 
 import useTitle from "../../hooks/useTitle";
 
-import { GetTasksQuery, Task, TaskType, useGetTasksQuery } from '../../graphql/generated';
+import { GetTasksQuery, Task, TaskType, useGetTasksQuery } from "../../graphql/generated";
 
 import { Container, TabLine } from "./styles";
-import { IProps, TParsedTasks, TTableTask } from './types';
+import { IProps, TParsedTasks, TTableTask } from "./types";
 import Table from "./Table";
 
 const TabPane = Tabs.TabPane;

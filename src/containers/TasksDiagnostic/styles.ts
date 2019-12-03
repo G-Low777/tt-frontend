@@ -86,11 +86,69 @@ export const ButtonIcon = Styled.img`
 `;
 
 export const ContextMenuItems = Styled.div`
-  width: 80px;
+  width: 96px;
 `;
 
 export const ContextMenuItem = Styled.img`
-  &:not(:last-child) {
-    margin-right: 16px;
+  padding: 8px;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+  &:hover {
+    opacity: 0.4;
   }
 `;
+
+export const ModalErrorText = Styled.div`
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 22px;
+  color: rgba(39, 47, 90, 0.65);
+`;
+
+export const ModalCloseIcon = Styled.img`
+  width: 16px;
+  height: 16px;
+  padding: 2px;
+`;
+
+export const ModalTitle = Styled.div`
+  font-size: 16px;
+  line-height: 24px;
+  color: #272F5A;
+`;
+
+export const errorOkButtonProps = {
+  style: {
+    padding: "4px 24px 6px 25px",
+    minWidth: "120px",
+  },
+};
+
+export const commentOkButtonProps = {
+  style: {
+    padding: "4px 16px 6px",
+    minWidth: "120px",
+  },
+};
+
+export const cancelButtonProps = {
+  style: {
+    padding: "4px 13px 6px 14px",
+    color: "#272F5A",
+  },
+};
+
+export const errorBodyStyle = {
+  paddingBottom: "8px",
+};
+export const commentBodyStyle = {
+  paddingBottom: 0,
+};
+
+export const commentFormItemStyle = {
+  marginBottom: "20px",
+};
+
+export const textAreaStyle = {
+  resize: "none" as const,
+};

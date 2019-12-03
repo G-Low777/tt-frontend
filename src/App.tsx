@@ -5,7 +5,7 @@ import TitleContext from "./decorators/TitleContext";
 import { useGetTokenQuery } from "./graphql/generated";
 import unauthorized from "./routes/unauthorized";
 import authorized from "./routes/authorized";
-import { baseTitle } from './utils/const';
+import { baseTitle } from "./utils/const";
 
 const unauthRoutes = [unauthorized];
 const authRoutes = [authorized];

@@ -223,6 +223,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "comment",
+            "description": "Комментарий к задаче",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -454,11 +466,11 @@
           },
           {
             "name": "setTasksType",
-            "description": "Меняет тип задачи",
+            "description": "Меняет тип задач и добавляет сообщение об ошибке",
             "args": [
               {
                 "name": "ids",
-                "description": null,
+                "description": "Массив из ID задач, которым нужно поменять тип",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -480,7 +492,7 @@
               },
               {
                 "name": "type",
-                "description": null,
+                "description": "Тип, который нужно проставить задачам",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -489,6 +501,61 @@
                     "name": "TaskType",
                     "ofType": null
                   }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "errorComment",
+                "description": "Комментарий, который нужно оставить к каждой задаче, если им назначается ошибочный тип",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "setTasksComment",
+            "description": "Добавляет комментарий к задачам",
+            "args": [
+              {
+                "name": "ids",
+                "description": "Массив из ID задач, которым нужно добавить комментарий",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Int",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "comment",
+                "description": "Комментарий, который нужно применить ко всем переданным задачам",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
                 "defaultValue": null
               }

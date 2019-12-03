@@ -1,10 +1,10 @@
-import React from 'react';
-import moment from 'moment';
+import React from "react";
+import moment from "moment";
 
-import { Task } from '../../graphql/generated';
+import { Task } from "../../graphql/generated";
 
-import ContextMenu from './ContextMenu';
-import { BottomText, RowText, StackText, TopText } from './styles';
+import ContextMenu from "./ContextMenu";
+import { BottomText, RowText, StackText, TopText } from "./styles";
 
 const columns = [
   {

@@ -14,6 +14,8 @@ extend type Task {
   type: TaskType!
   "Дата закрытия задачи"
   closingTime: Date
+  "Комментарий к задаче"
+  comment: String
 }
 
 extend type Query {
@@ -24,8 +26,22 @@ extend type Query {
 extend type Mutation {
   "Сохраняет токен авторизации в браузере"
   saveToken(token: String!): Token!
-  "Меняет тип задачи"
-  setTasksType(ids: [Int!]!, type: TaskType!): Boolean
+  "Меняет тип задач и добавляет сообщение об ошибке"
+  setTasksType(
+    "Массив из ID задач, которым нужно поменять тип"
+    ids: [Int!]!
+    "Тип, который нужно проставить задачам"
+    type: TaskType!
+    "Комментарий, который нужно оставить к каждой задаче, если им назначается ошибочный тип"
+    errorComment: String
+  ): Boolean
+  "Добавляет комментарий к задачам"
+  setTasksComment(
+    "Массив из ID задач, которым нужно добавить комментарий"
+    ids: [Int!]!
+    "Комментарий, который нужно применить ко всем переданным задачам"
+    comment: String
+  ): Boolean
   "Выход из системы"
   logout: Token!
 }

@@ -8,7 +8,7 @@ import logoText from "../../assets/vector/logo-text.svg";
 
 import { Container, RhombusTopLeft, RhombusBottomRight, Logo, LogoText, Content, Title } from "./styles";
 import { IProps } from "./types";
-import TitleContext from '../../decorators/TitleContext';
+import TitleContext from "../../decorators/TitleContext";
 
 const Unauthorized: React.FC<IProps> = props => {
   const [title] = useContext(TitleContext);

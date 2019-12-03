@@ -1,4 +1,4 @@
-import { QueryResolvers, Token } from "../../graphql/generated";
+import { QueryResolvers } from "../../graphql/generated";
 
 const Query: QueryResolvers = {
   getToken: () => {

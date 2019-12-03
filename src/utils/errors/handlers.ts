@@ -1,4 +1,4 @@
-import { Dictionary } from 'lodash';
+import { Dictionary } from "lodash";
 
 import { TErrorHandler } from "./types";
 

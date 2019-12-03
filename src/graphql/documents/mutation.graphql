@@ -19,6 +19,10 @@ mutation SaveToken($token: String!) {
     }
 }
 
-mutation SetTasksType($ids: [Int!]!, $type: TaskType!) {
-    setTasksType(ids: $ids, type: $type) @client
+mutation SetTasksType($ids: [Int!]!, $type: TaskType!, $errorComment: String) {
+    setTasksType(ids: $ids, type: $type, errorComment: $errorComment) @client
+}
+
+mutation SetTasksComment($ids: [Int!]!, $comment: String) {
+    setTasksComment(ids: $ids, comment: $comment) @client
 }

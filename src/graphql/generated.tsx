@@ -34,8 +34,10 @@ export type Mutation = {
   auth?: Maybe<Token>,
   /** Сохраняет токен авторизации в браузере */
   saveToken: Token,
-  /** Меняет тип задачи */
+  /** Меняет тип задач и добавляет сообщение об ошибке */
   setTasksType?: Maybe<Scalars['Boolean']>,
+  /** Добавляет комментарий к задачам */
+  setTasksComment?: Maybe<Scalars['Boolean']>,
   /** Выход из системы */
   logout: Token,
 };
@@ -54,7 +56,14 @@ export type MutationSaveTokenArgs = {
 
 export type MutationSetTasksTypeArgs = {
   ids: Array<Scalars['Int']>,
-  type: TaskType
+  type: TaskType,
+  errorComment?: Maybe<Scalars['String']>
+};
+
+
+export type MutationSetTasksCommentArgs = {
+  ids: Array<Scalars['Int']>,
+  comment?: Maybe<Scalars['String']>
 };
 
 export type Query = {
@@ -89,6 +98,8 @@ export type Task = {
   type: TaskType,
   /** Дата закрытия задачи */
   closingTime?: Maybe<Scalars['Date']>,
+  /** Комментарий к задаче */
+  comment?: Maybe<Scalars['String']>,
 };
 
 export enum TaskType {
@@ -157,13 +168,25 @@ export type SaveTokenMutation = (
 
 export type SetTasksTypeMutationVariables = {
   ids: Array<Scalars['Int']>,
-  type: TaskType
+  type: TaskType,
+  errorComment?: Maybe<Scalars['String']>
 };
 
 
 export type SetTasksTypeMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'setTasksType'>
+);
+
+export type SetTasksCommentMutationVariables = {
+  ids: Array<Scalars['Int']>,
+  comment?: Maybe<Scalars['String']>
+};
+
+
+export type SetTasksCommentMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setTasksComment'>
 );
 
 export type GetTasksQueryVariables = {};
@@ -173,7 +196,7 @@ export type GetTasksQuery = (
   { __typename?: 'Query' }
   & { tasks: Maybe<Array<(
     { __typename?: 'Task' }
-    & Pick<Task, 'id' | 'number' | 'address' | 'mf' | 'message' | 'device' | 'deviceId' | 'creationTime' | 'type' | 'closingTime'>
+    & Pick<Task, 'id' | 'number' | 'address' | 'mf' | 'message' | 'device' | 'deviceId' | 'creationTime' | 'type' | 'closingTime' | 'comment'>
   )>> }
 );
 
@@ -199,9 +222,9 @@ export type GetTokenQuery = (
   )> }
 );
 
-export type TaskTypeFragment = (
+export type TaskIdFragment = (
   { __typename?: 'Task' }
-  & Pick<Task, 'type'>
+  & Pick<Task, 'id'>
 );
 
 
@@ -318,6 +341,7 @@ export type MutationResolvers<ContextType = IResolverCtx, ParentType extends Res
   auth?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, RequireFields<MutationAuthArgs, 'login' | 'password'>>,
   saveToken?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationSaveTokenArgs, 'token'>>,
   setTasksType?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationSetTasksTypeArgs, 'ids' | 'type'>>,
+  setTasksComment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationSetTasksCommentArgs, 'ids'>>,
   logout?: Resolver<ResolversTypes['Token'], ParentType, ContextType>,
 };
 
@@ -338,6 +362,7 @@ export type TaskResolvers<ContextType = IResolverCtx, ParentType extends Resolve
   creationTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>,
   type?: Resolver<ResolversTypes['TaskType'], ParentType, ContextType>,
   closingTime?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>,
+  comment?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
 export type TokenResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
@@ -381,9 +406,9 @@ export type DirectiveResolvers<ContextType = IResolverCtx> = {
 * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
 */
 export type IDirectiveResolvers<ContextType = IResolverCtx> = DirectiveResolvers<ContextType>;
-export const TaskTypeFragmentDoc = gql`
-    fragment taskType on Task {
-  type
+export const TaskIdFragmentDoc = gql`
+    fragment taskId on Task {
+  id
 }
     `;
 export const AuthDocument = gql`
@@ -504,8 +529,8 @@ export type SaveTokenMutationHookResult = ReturnType<typeof useSaveTokenMutation
 export type SaveTokenMutationResult = ApolloReactCommon.MutationResult<SaveTokenMutation>;
 export type SaveTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<SaveTokenMutation, SaveTokenMutationVariables>;
 export const SetTasksTypeDocument = gql`
-    mutation SetTasksType($ids: [Int!]!, $type: TaskType!) {
-  setTasksType(ids: $ids, type: $type) @client
+    mutation SetTasksType($ids: [Int!]!, $type: TaskType!, $errorComment: String) {
+  setTasksType(ids: $ids, type: $type, errorComment: $errorComment) @client
 }
     `;
 export type SetTasksTypeMutationFn = ApolloReactCommon.MutationFunction<SetTasksTypeMutation, SetTasksTypeMutationVariables>;
@@ -531,6 +556,7 @@ export type SetTasksTypeComponentProps = Omit<ApolloReactComponents.MutationComp
  *   variables: {
  *      ids: // value for 'ids'
  *      type: // value for 'type'
+ *      errorComment: // value for 'errorComment'
  *   },
  * });
  */
@@ -540,6 +566,43 @@ export function useSetTasksTypeMutation(baseOptions?: ApolloReactHooks.MutationH
 export type SetTasksTypeMutationHookResult = ReturnType<typeof useSetTasksTypeMutation>;
 export type SetTasksTypeMutationResult = ApolloReactCommon.MutationResult<SetTasksTypeMutation>;
 export type SetTasksTypeMutationOptions = ApolloReactCommon.BaseMutationOptions<SetTasksTypeMutation, SetTasksTypeMutationVariables>;
+export const SetTasksCommentDocument = gql`
+    mutation SetTasksComment($ids: [Int!]!, $comment: String) {
+  setTasksComment(ids: $ids, comment: $comment) @client
+}
+    `;
+export type SetTasksCommentMutationFn = ApolloReactCommon.MutationFunction<SetTasksCommentMutation, SetTasksCommentMutationVariables>;
+export type SetTasksCommentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<SetTasksCommentMutation, SetTasksCommentMutationVariables>, 'mutation'>;
+
+    export const SetTasksCommentComponent = (props: SetTasksCommentComponentProps) => (
+      <ApolloReactComponents.Mutation<SetTasksCommentMutation, SetTasksCommentMutationVariables> mutation={SetTasksCommentDocument} {...props} />
+    );
+    
+
+/**
+ * __useSetTasksCommentMutation__
+ *
+ * To run a mutation, you first call `useSetTasksCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetTasksCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setTasksCommentMutation, { data, loading, error }] = useSetTasksCommentMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *      comment: // value for 'comment'
+ *   },
+ * });
+ */
+export function useSetTasksCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetTasksCommentMutation, SetTasksCommentMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetTasksCommentMutation, SetTasksCommentMutationVariables>(SetTasksCommentDocument, baseOptions);
+      }
+export type SetTasksCommentMutationHookResult = ReturnType<typeof useSetTasksCommentMutation>;
+export type SetTasksCommentMutationResult = ApolloReactCommon.MutationResult<SetTasksCommentMutation>;
+export type SetTasksCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<SetTasksCommentMutation, SetTasksCommentMutationVariables>;
 export const GetTasksDocument = gql`
     query getTasks {
   tasks {
@@ -553,6 +616,7 @@ export const GetTasksDocument = gql`
     creationTime
     type @client
     closingTime @client
+    comment @client
   }
 }
     `;

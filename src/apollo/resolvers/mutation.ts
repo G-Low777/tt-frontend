@@ -1,6 +1,6 @@
-import { forEach } from 'lodash';
+import { forEach } from "lodash";
 
-import { MutationResolvers, Task, TaskType, TaskTypeFragmentDoc } from '../../graphql/generated';
+import { MutationResolvers, Task, TaskType, TaskIdFragmentDoc } from "../../graphql/generated";
 
 const Mutation: MutationResolvers = {
   saveToken: (parent, args, { cache }) => {
@@ -14,23 +14,41 @@ const Mutation: MutationResolvers = {
 
     return token;
   },
-  setTasksType: (parent, { ids, type }, { cache, getCacheKey }) => {
+  setTasksType: (parent, { ids, type, errorComment }, { cache, getCacheKey }) => {
     const currentTime = (new Date()).toJSON();
 
     forEach(ids, id => {
       const key = getCacheKey({ id, __typename: "Task" }) as string;
-      const task = cache.readFragment<Task>({ fragment: TaskTypeFragmentDoc, id: key });
+      const task = cache.readFragment<Task>({ fragment: TaskIdFragmentDoc, id: key });
 
       if (task) {
-        const newTask: Task = { ...task, id, type: type };
+        const updatedTask: Task = { ...task, type: type };
 
         if (type === TaskType.Solved) {
-          newTask.closingTime = currentTime;
+          updatedTask.closingTime = currentTime;
         } else {
-          newTask.closingTime = null;
+          updatedTask.closingTime = null;
         }
 
-        cache.writeData({ id: key, data: newTask });
+        if (type === TaskType.Error && errorComment) {
+          updatedTask.comment = errorComment;
+        }
+
+        cache.writeData({ id: key, data: updatedTask });
+      }
+    });
+
+    return true;
+  },
+  setTasksComment: (parent, { ids, comment }, { cache, getCacheKey }) => {
+    forEach(ids, id => {
+      const key = getCacheKey({ id, __typename: "Task" }) as string;
+      const task = cache.readFragment<Task>({ fragment: TaskIdFragmentDoc, id: key });
+
+      if (task) {
+        const updatedTask: Task = { ...task, comment };
+
+        cache.writeData({ id: key, data: updatedTask });
       }
     });
 
