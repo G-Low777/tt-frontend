@@ -34,6 +34,8 @@ export type Mutation = {
   auth?: Maybe<Token>,
   /** Сохраняет токен авторизации в браузере */
   saveToken: Token,
+  /** Меняет тип задачи */
+  setTasksType: Array<Task>,
   /** Выход из системы */
   logout: Token,
 };
@@ -47,6 +49,12 @@ export type MutationAuthArgs = {
 
 export type MutationSaveTokenArgs = {
   token: Scalars['String']
+};
+
+
+export type MutationSetTasksTypeArgs = {
+  ids: Array<Maybe<Scalars['Int']>>,
+  type: TaskType
 };
 
 export type Query = {
@@ -145,6 +153,20 @@ export type SaveTokenMutation = (
   ) }
 );
 
+export type SetTasksTypeMutationVariables = {
+  ids: Array<Maybe<Scalars['Int']>>,
+  type: TaskType
+};
+
+
+export type SetTasksTypeMutation = (
+  { __typename?: 'Mutation' }
+  & { setTasksType: Array<(
+    { __typename?: 'Task' }
+    & Pick<Task, 'id' | 'type'>
+  )> }
+);
+
 export type GetTasksQueryVariables = {};
 
 
@@ -176,6 +198,11 @@ export type GetTokenQuery = (
     { __typename?: 'Token' }
     & Pick<Token, 'id' | 'value'>
   )> }
+);
+
+export type TaskTypeFragment = (
+  { __typename?: 'Task' }
+  & Pick<Task, 'type'>
 );
 
 
@@ -291,6 +318,7 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export type MutationResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   auth?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, RequireFields<MutationAuthArgs, 'login' | 'password'>>,
   saveToken?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationSaveTokenArgs, 'token'>>,
+  setTasksType?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationSetTasksTypeArgs, 'ids' | 'type'>>,
   logout?: Resolver<ResolversTypes['Token'], ParentType, ContextType>,
 };
 
@@ -353,7 +381,11 @@ export type DirectiveResolvers<ContextType = IResolverCtx> = {
 * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
 */
 export type IDirectiveResolvers<ContextType = IResolverCtx> = DirectiveResolvers<ContextType>;
-
+export const TaskTypeFragmentDoc = gql`
+    fragment taskType on Task {
+  type
+}
+    `;
 export const AuthDocument = gql`
     mutation Auth($login: String!, $password: String!) {
   auth(login: $login, password: $password) {
@@ -471,6 +503,46 @@ export function useSaveTokenMutation(baseOptions?: ApolloReactHooks.MutationHook
 export type SaveTokenMutationHookResult = ReturnType<typeof useSaveTokenMutation>;
 export type SaveTokenMutationResult = ApolloReactCommon.MutationResult<SaveTokenMutation>;
 export type SaveTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<SaveTokenMutation, SaveTokenMutationVariables>;
+export const SetTasksTypeDocument = gql`
+    mutation SetTasksType($ids: [Int]!, $type: TaskType!) {
+  setTasksType(ids: $ids, type: $type) @client {
+    id
+    type
+  }
+}
+    `;
+export type SetTasksTypeMutationFn = ApolloReactCommon.MutationFunction<SetTasksTypeMutation, SetTasksTypeMutationVariables>;
+export type SetTasksTypeComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<SetTasksTypeMutation, SetTasksTypeMutationVariables>, 'mutation'>;
+
+    export const SetTasksTypeComponent = (props: SetTasksTypeComponentProps) => (
+      <ApolloReactComponents.Mutation<SetTasksTypeMutation, SetTasksTypeMutationVariables> mutation={SetTasksTypeDocument} {...props} />
+    );
+    
+
+/**
+ * __useSetTasksTypeMutation__
+ *
+ * To run a mutation, you first call `useSetTasksTypeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetTasksTypeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setTasksTypeMutation, { data, loading, error }] = useSetTasksTypeMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useSetTasksTypeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetTasksTypeMutation, SetTasksTypeMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetTasksTypeMutation, SetTasksTypeMutationVariables>(SetTasksTypeDocument, baseOptions);
+      }
+export type SetTasksTypeMutationHookResult = ReturnType<typeof useSetTasksTypeMutation>;
+export type SetTasksTypeMutationResult = ApolloReactCommon.MutationResult<SetTasksTypeMutation>;
+export type SetTasksTypeMutationOptions = ApolloReactCommon.BaseMutationOptions<SetTasksTypeMutation, SetTasksTypeMutationVariables>;
 export const GetTasksDocument = gql`
     query getTasks {
   tasks {

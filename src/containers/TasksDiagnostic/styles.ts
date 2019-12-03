@@ -84,3 +84,13 @@ export const ButtonIcon = Styled.img`
   margin-right: 8px;
   margin-top: -1px;
 `;
+
+export const ContextMenuItems = Styled.div`
+  width: 80px;
+`;
+
+export const ContextMenuItem = Styled.img`
+  &:not(:last-child) {
+    margin-right: 16px;
+  }
+`;

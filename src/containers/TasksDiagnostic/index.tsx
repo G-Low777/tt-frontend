@@ -10,6 +10,7 @@ import { Task, useGetTasksQuery } from "../../graphql/generated";
 import TableActions from "./TableActions";
 import { IProps } from "./types";
 import { Container, TabLine, StackText, TopText, BottomText, RowText } from "./styles";
+import ContextMenu from "./ContextMenu";
 
 const TabPane = Tabs.TabPane;
 const columns = [
@@ -63,6 +64,11 @@ const columns = [
   },
   {
     title: "",
+    render(text: any, record: Task) {
+      return (
+        <ContextMenu key="context-menu" task={record} />
+      );
+    }
   }
 ];
 

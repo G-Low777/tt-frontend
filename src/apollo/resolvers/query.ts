@@ -1,5 +1,4 @@
-import { QueryResolvers, Task, Token } from "../../graphql/generated";
-import { map } from "lodash";
+import { QueryResolvers, Token } from "../../graphql/generated";
 
 const Query: QueryResolvers = {
   getToken: () => {
@@ -10,15 +9,6 @@ const Query: QueryResolvers = {
       value: tokenValue ? tokenValue : "",
       __typename: "Token",
     };
-  },
-  tasks: (root) => {
-    // @ts-ignore
-    return map<Task, Task>(root.tasks, task => {
-      return {
-        ...task,
-        type: "ERROR",
-      }
-    });
   },
 };
 

@@ -22,6 +22,8 @@ extend type Query {
 extend type Mutation {
   "Сохраняет токен авторизации в браузере"
   saveToken(token: String!): Token!
+  "Меняет тип задачи"
+  setTasksType(ids: [Int]!, type: TaskType!): [Task!]!
   "Выход из системы"
   logout: Token!
 }

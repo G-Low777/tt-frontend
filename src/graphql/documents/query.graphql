@@ -19,10 +19,13 @@ query getMe {
     }
 }
 
-
 query GetToken {
     getToken @client(always: true) {
         id
         value
     }
+}
+
+fragment taskType on Task {
+    type
 }
