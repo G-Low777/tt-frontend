@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Modal, Input } from "antd";
 
 import close from "../../assets/vector/close.svg";

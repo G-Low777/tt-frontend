@@ -27,7 +27,7 @@ function parseTasks(tasksQuery?: GetTasksQuery, type?: TaskType): TParsedTasks {
   forEach<Task>(tasksQuery.tasks , task => {
     const parsedTask: TTableTask = {
       ...task,
-      key: `${task.__typename}:${task.id}`,
+      key: task.id,
     };
 
     parsedTasks.all.push(parsedTask);
@@ -54,13 +54,23 @@ const TaskDiagnostic: React.FC<IProps> = props => {
           <Table key="table" tasks={parsedTasks.all} loading={tasks.loading} />
         </TabPane>
         <TabPane key="wrong" tab={`Ошибочные (${parsedTasks.wrong.length})`}>
-          <Table key="table" tasks={parsedTasks.wrong} loading={tasks.loading} />
+          <Table
+            key="table"
+            tasks={parsedTasks.wrong}
+            loading={tasks.loading}
+            taskTypes={TaskType.Error}
+          />
         </TabPane>
         <TabPane key="correct" tab={`Правильные (${parsedTasks.correct.length})`}>
           <Table key="table" tasks={parsedTasks.correct} loading={tasks.loading} />
         </TabPane>
         <TabPane key="resolved" tab={`Исправленные (${parsedTasks.solved.length})`}>
-          <Table key="table" tasks={parsedTasks.solved} loading={tasks.loading} />
+          <Table
+            key="table"
+            tasks={parsedTasks.solved}
+            loading={tasks.loading}
+            taskTypes={TaskType.Solved}
+          />
         </TabPane>
       </Tabs>
     </Container>

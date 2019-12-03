@@ -5,7 +5,7 @@ import { ITableProps, TTableTask } from "./types";
 import TableActions from "./TableActions";
 import columns from "./columns";
 
-const Table: React.FC<ITableProps> = ({ tasks, loading }) => {
+const Table: React.FC<ITableProps> = ({ tasks, loading, taskTypes }) => {
   const [selectedRowKeys, onSelectedRowKeysChange] = useState<string[] | number[]>([]);
   const rowSelection = {
     selectedRowKeys,
@@ -14,7 +14,12 @@ const Table: React.FC<ITableProps> = ({ tasks, loading }) => {
 
   return (
     <>
-      <TableActions key="table-actions" />
+      <TableActions
+        key="table-actions"
+        tasksIds={selectedRowKeys as number[]}
+        taskTypes={taskTypes}
+        clearSelection={() => onSelectedRowKeysChange([])}
+      />
       <AntTable<TTableTask>
         key="table"
         rowSelection={rowSelection}

@@ -1,9 +1,9 @@
 import { ModalProps } from "antd/lib/modal";
 
 import { IRoutes } from "../../routes/types";
-import { Task } from "../../graphql/generated";
+import { Task, TaskType } from "../../graphql/generated";
 
-export type TTableTask = Task & { key: string };
+export type TTableTask = Task & { key: number };
 export interface TParsedTasks {
   all: TTableTask[];
   wrong: TTableTask[];
@@ -22,6 +22,7 @@ export interface IContextMenuProps {
 export interface ITableProps {
   loading?: boolean;
   tasks: TTableTask[];
+  taskTypes?: TaskType;
 }
 
 export interface IModalsProps {
@@ -30,5 +31,11 @@ export interface IModalsProps {
   visible: ModalProps["visible"];
   onOk: ModalProps["onOk"];
   onCancel: ModalProps["onCancel"];
-  oldComment: string | null | undefined;
+  oldComment?: string | null | undefined;
+}
+
+export interface ITableActionsProps {
+  tasksIds: number[];
+  taskTypes?: TaskType;
+  clearSelection(): void;
 }

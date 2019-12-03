@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, Select, Button } from "antd";
 
 import down from "../../assets/vector/down.svg";
@@ -10,7 +10,8 @@ import ok from "../../assets/vector/ok.svg";
 
 import {
   ButtonIcon,
-  Buttons, ButtonSpace,
+  Buttons,
+  ButtonSpace,
   FilterSpoiler,
   FilterSpoilerIcon,
   SearchNSort,
@@ -18,8 +19,24 @@ import {
   Sort,
   SortBy,
 } from "./styles";
+import { ITableActionsProps } from "./types";
+import { TaskType, useSetTasksTypeMutation } from "../../graphql/generated";
+import Modals from "./Modals";
 
-const TableActions: React.FC = () => {
+const TableActions: React.FC<ITableActionsProps> = ({ tasksIds, taskTypes, clearSelection }) => {
+  const [currentModal, setCurrentModal] = useState<"error" | "comment" | undefined>(
+    undefined
+  );
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [setSolved] = useSetTasksTypeMutation({
+    variables: {
+      ids: tasksIds,
+      type: TaskType.Solved,
+    },
+  });
+
+  const isButtonsDisabled = tasksIds.length === 0;
+
   return (
     <div key="container">
       <FilterSpoiler key="filter">
@@ -56,12 +73,58 @@ const TableActions: React.FC = () => {
         </Sort>
       </SearchNSort>
       <Buttons key="buttons">
-        <Button key="correct"><ButtonIcon key="icon" src={ok} /> Правильно</Button>
-        <ButtonSpace key="space-1" />
-        <Button key="comment"><ButtonIcon key="icon" src={comment} /> Добавить комментарий</Button>
-        <ButtonSpace key="space-2" />
-        <Button key="error"><ButtonIcon key="icon" src={alarm} /> Ошибка</Button>
+        {!taskTypes || taskTypes === TaskType.Error ? (
+          <>
+            <Button
+              key="correct"
+              disabled={isButtonsDisabled}
+              onClick={() => setSolved().then(() => clearSelection())}
+            >
+              <ButtonIcon key="icon" src={ok} /> Правильно
+            </Button>
+            <ButtonSpace key="space-1" />
+          </>
+        ) : null}
+        <Button
+          key="comment"
+          disabled={isButtonsDisabled}
+          onClick={() => {
+            setCurrentModal("comment");
+            setModalVisible(true);
+          }}
+        >
+          <ButtonIcon key="icon" src={comment} /> Добавить комментарий
+        </Button>
+        {!taskTypes || taskTypes === TaskType.Solved ? (
+          <>
+            <ButtonSpace key="space-2" />
+            <Button
+              key="error"
+              disabled={isButtonsDisabled}
+              onClick={() => {
+                setCurrentModal("error");
+                setModalVisible(true);
+              }}
+            >
+              <ButtonIcon key="icon" src={alarm} /> Ошибка
+            </Button>
+          </>
+        ) : null}
       </Buttons>
+      <Modals
+        key="modals"
+        type={currentModal}
+        tasksIds={tasksIds}
+        visible={isModalVisible}
+        onOk={() => {
+          clearSelection();
+          setModalVisible(false);
+        }}
+        onCancel={() => {
+          clearSelection();
+          setModalVisible(false)
+        }}
+      />
     </div>
   )
 };

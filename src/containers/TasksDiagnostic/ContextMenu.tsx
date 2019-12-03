@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {
   TaskType,
   useSetTasksTypeMutation,
-} from '../../graphql/generated';
+} from "../../graphql/generated";
 
 import okGray from "../../assets/vector/ok-gray.svg";
 import plusGray from "../../assets/vector/plus-gray.svg";
@@ -12,8 +12,8 @@ import commentRemove from "../../assets/vector/comment-remove.svg";
 
 import { IContextMenuProps } from "./types";
 import { ContextMenuItem, ContextMenuItems } from "./styles";
-import Modals from './Modals';
-import { Tooltip } from 'antd';
+import Modals from "./Modals";
+import { Tooltip } from "antd";
 
 const ContextMenu: React.FC<IContextMenuProps> = props => {
   const [currentModal, setCurrentModal] = useState<"error" | "comment" | undefined>(
