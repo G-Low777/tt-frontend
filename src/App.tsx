@@ -28,7 +28,7 @@ const App: React.FC = () => {
 
   return (
     <TitleContext.Provider value={titleState}>
-      {loggedIn.loading ? null : renderRoutes(isAuthorized ? authRoutes : unauthRoutes)}}
+      {loggedIn.loading ? null : renderRoutes(isAuthorized ? authRoutes : unauthRoutes)}
     </TitleContext.Provider>
   );
 };
