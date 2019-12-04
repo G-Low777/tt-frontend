@@ -18,10 +18,15 @@ import {
   SelectOptionIcon,
   Sort,
   SortBy,
+  sortSelectStyle,
 } from "./styles";
 import { ITableActionsProps } from "./types";
 import { TaskType, useSetTasksTypeMutation } from "../../graphql/generated";
 import Modals from "./Modals";
+
+const sortSelectDefaultValue = {
+  key: "ASC"
+};
 
 const TableActions: React.FC<ITableActionsProps> = ({ tasksIds, taskTypes, clearSelection }) => {
   const [currentModal, setCurrentModal] = useState<"error" | "comment" | undefined>(
@@ -53,13 +58,9 @@ const TableActions: React.FC<ITableActionsProps> = ({ tasksIds, taskTypes, clear
           <Select
             key="select"
             defaultActiveFirstOption={true}
-            style={{ width: "204px" }}
-            defaultValue={(
-              <>
-                <SelectOptionIcon key="icon" src={min} />
-                времени создания
-              </>
-            )}
+            style={sortSelectStyle}
+            labelInValue={true}
+            defaultValue={sortSelectDefaultValue}
           >
             <Select.Option value="ASC">
               <SelectOptionIcon key="icon" src={min} />

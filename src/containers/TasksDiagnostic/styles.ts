@@ -152,3 +152,7 @@ export const commentFormItemStyle = {
 export const textAreaStyle = {
   resize: "none" as const,
 };
+
+export const sortSelectStyle = {
+  width: "204px"
+};
