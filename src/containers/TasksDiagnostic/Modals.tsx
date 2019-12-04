@@ -27,8 +27,15 @@ import {
 
 const closeIcon = <ModalCloseIcon key="close-icon" src={close} />;
 
-const Modals: React.FC<IModalsProps> = ({ tasksIds, visible, type, onOk, onCancel, oldComment }) => {
-  const [comment, setComment] = useState<string>(oldComment || "");
+const Modals: React.FC<IModalsProps> = ({
+  tasksIds,
+  visible,
+  type,
+  onOk,
+  onCancel,
+  oldComment
+}) => {
+  const [comment, setComment] = useState<string>(oldComment);
   const [setWrong] = useSetTasksTypeMutation({
     variables: {
       ids: tasksIds,
@@ -54,6 +61,7 @@ const Modals: React.FC<IModalsProps> = ({ tasksIds, visible, type, onOk, onCance
       }
       okText={isError ? "Сообщить" : "Оставить комментарий"}
       cancelText="Отмена"
+      destroyOnClose={true}
       visible={visible}
       closeIcon={closeIcon}
       bodyStyle={isError ? errorBodyStyle : commentBodyStyle}
@@ -89,8 +97,12 @@ const Modals: React.FC<IModalsProps> = ({ tasksIds, visible, type, onOk, onCance
         <Input.TextArea
           key="textarea"
           rows={isError ? 2 : 5}
+          autoSize={{
+            minRows: isError ? 2 : 5,
+            maxRows: isError ? 2 : 5,
+          }}
           style={textAreaStyle}
-          defaultValue={oldComment || ""}
+          value={comment || oldComment}
           onChange={
             (e: React.ChangeEvent<HTMLTextAreaElement>) => setComment(e.currentTarget.value)
           }

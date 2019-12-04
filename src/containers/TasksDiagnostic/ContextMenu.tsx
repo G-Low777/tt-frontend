@@ -63,7 +63,7 @@ const ContextMenu: React.FC<IContextMenuProps> = props => {
         key="modals"
         type={currentModal}
         tasksIds={[props.task.id]}
-        oldComment={props.task.comment}
+        oldComment={props.task.comment || ""}
         visible={isModalVisible}
         onOk={() => setModalVisible(false)}
         onCancel={() => setModalVisible(false)}

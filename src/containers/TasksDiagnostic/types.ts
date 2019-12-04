@@ -31,7 +31,7 @@ export interface IModalsProps {
   visible: ModalProps["visible"];
   onOk: ModalProps["onOk"];
   onCancel: ModalProps["onCancel"];
-  oldComment?: string | null | undefined;
+  oldComment: string;
 }
 
 export interface ITableActionsProps {

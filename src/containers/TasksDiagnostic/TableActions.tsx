@@ -117,12 +117,12 @@ const TableActions: React.FC<ITableActionsProps> = ({ tasksIds, taskTypes, clear
         type={currentModal}
         tasksIds={tasksIds}
         visible={isModalVisible}
+        oldComment=""
         onOk={() => {
           clearSelection();
           setModalVisible(false);
         }}
         onCancel={() => {
-          clearSelection();
           setModalVisible(false)
         }}
       />
