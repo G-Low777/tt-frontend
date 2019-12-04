@@ -31,15 +31,15 @@ export enum CacheControlScope {
 export type Mutation = {
    __typename?: 'Mutation',
   /** Авторизация, возвращает токен доступа при успешной авторизации */
-  auth?: Maybe<Token>,
+  auth?: Maybe<Scalars['String']>,
   /** Сохраняет токен авторизации в браузере */
-  saveToken: Token,
+  saveToken: Scalars['Boolean'],
   /** Меняет тип задач и добавляет сообщение об ошибке */
-  setTasksType?: Maybe<Scalars['Boolean']>,
+  setTasksType: Scalars['Boolean'],
   /** Добавляет комментарий к задачам */
-  setTasksComment?: Maybe<Scalars['Boolean']>,
+  setTasksComment: Scalars['Boolean'],
   /** Выход из системы */
-  logout: Token,
+  logout: Scalars['Boolean'],
 };
 
 
@@ -72,8 +72,8 @@ export type Query = {
   tasks?: Maybe<Array<Task>>,
   /** Возвращает информацию о текущем авторизованном пользователе */
   me?: Maybe<User>,
-  /** Возвращает токен авторизации, если он есть */
-  getToken?: Maybe<Token>,
+  /** Проверяет, залогинен ли пользователь */
+  isLoggedIn: Scalars['Boolean'],
 };
 
 export type Task = {
@@ -111,14 +111,6 @@ export enum TaskType {
   Solved = 'SOLVED'
 }
 
-export type Token = {
-   __typename?: 'Token',
-  /** ID токена */
-  id: Scalars['Int'],
-  /** Значение токена */
-  value: Scalars['String'],
-};
-
 
 export type User = {
    __typename?: 'User',
@@ -136,10 +128,7 @@ export type AuthMutationVariables = {
 
 export type AuthMutation = (
   { __typename?: 'Mutation' }
-  & { auth: Maybe<(
-    { __typename?: 'Token' }
-    & Pick<Token, 'id' | 'value'>
-  )> }
+  & Pick<Mutation, 'auth'>
 );
 
 export type LogoutMutationVariables = {};
@@ -147,10 +136,7 @@ export type LogoutMutationVariables = {};
 
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
-  & { logout: (
-    { __typename?: 'Token' }
-    & Pick<Token, 'id' | 'value'>
-  ) }
+  & Pick<Mutation, 'logout'>
 );
 
 export type SaveTokenMutationVariables = {
@@ -160,10 +146,7 @@ export type SaveTokenMutationVariables = {
 
 export type SaveTokenMutation = (
   { __typename?: 'Mutation' }
-  & { saveToken: (
-    { __typename?: 'Token' }
-    & Pick<Token, 'id' | 'value'>
-  ) }
+  & Pick<Mutation, 'saveToken'>
 );
 
 export type SetTasksTypeMutationVariables = {
@@ -211,15 +194,12 @@ export type GetMeQuery = (
   )> }
 );
 
-export type GetTokenQueryVariables = {};
+export type IsLoggedInQueryVariables = {};
 
 
-export type GetTokenQuery = (
+export type IsLoggedInQuery = (
   { __typename?: 'Query' }
-  & { getToken: Maybe<(
-    { __typename?: 'Token' }
-    & Pick<Token, 'id' | 'value'>
-  )> }
+  & Pick<Query, 'isLoggedIn'>
 );
 
 export type TaskIdFragment = (
@@ -305,9 +285,8 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>,
   TaskType: TaskType,
   User: ResolverTypeWrapper<User>,
-  Token: ResolverTypeWrapper<Token>,
-  Mutation: ResolverTypeWrapper<{}>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  Mutation: ResolverTypeWrapper<{}>,
   CacheControlScope: CacheControlScope,
   Upload: ResolverTypeWrapper<Scalars['Upload']>,
 };
@@ -321,9 +300,8 @@ export type ResolversParentTypes = {
   Date: Scalars['Date'],
   TaskType: TaskType,
   User: User,
-  Token: Token,
-  Mutation: {},
   Boolean: Scalars['Boolean'],
+  Mutation: {},
   CacheControlScope: CacheControlScope,
   Upload: Scalars['Upload'],
 };
@@ -338,17 +316,17 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  auth?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, RequireFields<MutationAuthArgs, 'login' | 'password'>>,
-  saveToken?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationSaveTokenArgs, 'token'>>,
-  setTasksType?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationSetTasksTypeArgs, 'ids' | 'type'>>,
-  setTasksComment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationSetTasksCommentArgs, 'ids'>>,
-  logout?: Resolver<ResolversTypes['Token'], ParentType, ContextType>,
+  auth?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationAuthArgs, 'login' | 'password'>>,
+  saveToken?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSaveTokenArgs, 'token'>>,
+  setTasksType?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSetTasksTypeArgs, 'ids' | 'type'>>,
+  setTasksComment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSetTasksCommentArgs, 'ids'>>,
+  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type QueryResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType>,
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
-  getToken?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType>,
+  isLoggedIn?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type TaskResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']> = {
@@ -365,11 +343,6 @@ export type TaskResolvers<ContextType = IResolverCtx, ParentType extends Resolve
   comment?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
-export type TokenResolvers<ContextType = IResolverCtx, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
-  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-};
-
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
   name: 'Upload'
 }
@@ -384,7 +357,6 @@ export type Resolvers<ContextType = IResolverCtx> = {
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Task?: TaskResolvers<ContextType>,
-  Token?: TokenResolvers<ContextType>,
   Upload?: GraphQLScalarType,
   User?: UserResolvers<ContextType>,
 };
@@ -413,10 +385,7 @@ export const TaskIdFragmentDoc = gql`
     `;
 export const AuthDocument = gql`
     mutation Auth($login: String!, $password: String!) {
-  auth(login: $login, password: $password) {
-    id
-    value
-  }
+  auth(login: $login, password: $password)
 }
     `;
 export type AuthMutationFn = ApolloReactCommon.MutationFunction<AuthMutation, AuthMutationVariables>;
@@ -453,10 +422,7 @@ export type AuthMutationResult = ApolloReactCommon.MutationResult<AuthMutation>;
 export type AuthMutationOptions = ApolloReactCommon.BaseMutationOptions<AuthMutation, AuthMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
-  logout @client {
-    id
-    value
-  }
+  logout @client
 }
     `;
 export type LogoutMutationFn = ApolloReactCommon.MutationFunction<LogoutMutation, LogoutMutationVariables>;
@@ -491,10 +457,7 @@ export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutati
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const SaveTokenDocument = gql`
     mutation SaveToken($token: String!) {
-  saveToken(token: $token) @client {
-    id
-    value
-  }
+  saveToken(token: $token) @client
 }
     `;
 export type SaveTokenMutationFn = ApolloReactCommon.MutationFunction<SaveTokenMutation, SaveTokenMutationVariables>;
@@ -690,42 +653,39 @@ export function useGetMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
 export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
 export type GetMeQueryResult = ApolloReactCommon.QueryResult<GetMeQuery, GetMeQueryVariables>;
-export const GetTokenDocument = gql`
-    query GetToken {
-  getToken @client(always: true) {
-    id
-    value
-  }
+export const IsLoggedInDocument = gql`
+    query IsLoggedIn {
+  isLoggedIn @client
 }
     `;
-export type GetTokenComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetTokenQuery, GetTokenQueryVariables>, 'query'>;
+export type IsLoggedInComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<IsLoggedInQuery, IsLoggedInQueryVariables>, 'query'>;
 
-    export const GetTokenComponent = (props: GetTokenComponentProps) => (
-      <ApolloReactComponents.Query<GetTokenQuery, GetTokenQueryVariables> query={GetTokenDocument} {...props} />
+    export const IsLoggedInComponent = (props: IsLoggedInComponentProps) => (
+      <ApolloReactComponents.Query<IsLoggedInQuery, IsLoggedInQueryVariables> query={IsLoggedInDocument} {...props} />
     );
     
 
 /**
- * __useGetTokenQuery__
+ * __useIsLoggedInQuery__
  *
- * To run a query within a React component, call `useGetTokenQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * To run a query within a React component, call `useIsLoggedInQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsLoggedInQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetTokenQuery({
+ * const { data, loading, error } = useIsLoggedInQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetTokenQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetTokenQuery, GetTokenQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetTokenQuery, GetTokenQueryVariables>(GetTokenDocument, baseOptions);
+export function useIsLoggedInQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<IsLoggedInQuery, IsLoggedInQueryVariables>) {
+        return ApolloReactHooks.useQuery<IsLoggedInQuery, IsLoggedInQueryVariables>(IsLoggedInDocument, baseOptions);
       }
-export function useGetTokenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetTokenQuery, GetTokenQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetTokenQuery, GetTokenQueryVariables>(GetTokenDocument, baseOptions);
+export function useIsLoggedInLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<IsLoggedInQuery, IsLoggedInQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<IsLoggedInQuery, IsLoggedInQueryVariables>(IsLoggedInDocument, baseOptions);
         }
-export type GetTokenQueryHookResult = ReturnType<typeof useGetTokenQuery>;
-export type GetTokenLazyQueryHookResult = ReturnType<typeof useGetTokenLazyQuery>;
-export type GetTokenQueryResult = ApolloReactCommon.QueryResult<GetTokenQuery, GetTokenQueryVariables>;
+export type IsLoggedInQueryHookResult = ReturnType<typeof useIsLoggedInQuery>;
+export type IsLoggedInLazyQueryHookResult = ReturnType<typeof useIsLoggedInLazyQuery>;
+export type IsLoggedInQueryResult = ApolloReactCommon.QueryResult<IsLoggedInQuery, IsLoggedInQueryVariables>;

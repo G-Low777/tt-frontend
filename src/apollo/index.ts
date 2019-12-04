@@ -24,18 +24,27 @@ const authLink = setContext((_, { headers }) => {
 
 const cache = new InMemoryCache();
 
-cache.writeData({
-  data: {
-    tasks: [],
-  },
-});
+async function initCache() {
+  await cache.writeData({
+    data: {
+      tasks: [],
+      token: null,
+      isLoggedIn: !!localStorage.getItem("token"),
+    },
+  });
+}
+
+initCache().catch(console.error);
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache,
   typeDefs,
-// @ts-ignore
+  // @ts-ignore
   resolvers,
 });
+
+client.onResetStore(initCache);
+client.onClearStore(initCache);
 
 export default client;

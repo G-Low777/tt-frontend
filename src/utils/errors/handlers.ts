@@ -1,8 +1,6 @@
-import { Dictionary } from "lodash";
+import { TErrorHandlers } from "./types";
 
-import { TErrorHandler } from "./types";
-
-const handlers: Dictionary<TErrorHandler> = {
+const handlers: TErrorHandlers = {
 	unknown_error: {
 		code: "unknown_error",
 		title: "Неизвестная ошибка",

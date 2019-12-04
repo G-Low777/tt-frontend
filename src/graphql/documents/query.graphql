@@ -21,11 +21,8 @@ query getMe {
     }
 }
 
-query GetToken {
-    getToken @client(always: true) {
-        id
-        value
-    }
+query IsLoggedIn {
+    isLoggedIn @client
 }
 
 fragment taskId on Task {

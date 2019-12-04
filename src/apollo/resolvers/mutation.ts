@@ -1,25 +1,24 @@
-import { forEach } from "lodash";
-
 import { MutationResolvers, Task, TaskType, TaskIdFragmentDoc } from "../../graphql/generated";
 
 const Mutation: MutationResolvers = {
-  saveToken: (parent, args, { cache }) => {
-    const token = {
-      id: 1,
-      value: args.token,
-      __typename: "Token" as const,
-    };
+  saveToken: async (parent, args, { cache }) => {
+    localStorage.setItem("token", args.token);
+    await cache.writeData({
+      data: {
+        token: args.token,
+        isLoggedIn: true,
+      }
+    });
 
-    cache.writeData({ data: token });
-
-    return token;
+    return true;
   },
-  setTasksType: (parent, { ids, type, errorComment }, { cache, getCacheKey }) => {
+  setTasksType: async (parent, { ids, type, errorComment }, { cache, getCacheKey }) => {
+    const idsCount = ids.length;
     const currentTime = (new Date()).toJSON();
 
-    forEach(ids, id => {
-      const key = getCacheKey({ id, __typename: "Task" }) as string;
-      const task = cache.readFragment<Task>({ fragment: TaskIdFragmentDoc, id: key });
+    for (let i: number = 0; i < idsCount; i++) {
+      const id = getCacheKey({ id: ids[i], __typename: "Task" }) as string;
+      const task = cache.readFragment<Task>({ fragment: TaskIdFragmentDoc, id });
 
       if (task) {
         const updatedTask: Task = { ...task, type: type };
@@ -34,37 +33,33 @@ const Mutation: MutationResolvers = {
           updatedTask.comment = errorComment;
         }
 
-        cache.writeData({ id: key, data: updatedTask });
+        await cache.writeData({ id, data: updatedTask });
       }
-    });
+    }
 
     return true;
   },
-  setTasksComment: (parent, { ids, comment }, { cache, getCacheKey }) => {
-    forEach(ids, id => {
-      const key = getCacheKey({ id, __typename: "Task" }) as string;
+  setTasksComment: async (parent, { ids, comment }, { cache, getCacheKey }) => {
+    const idsCount = ids.length;
+
+    for (let i: number = 0; i < idsCount; i++) {
+      const key = getCacheKey({ id: ids[i], __typename: "Task" }) as string;
       const task = cache.readFragment<Task>({ fragment: TaskIdFragmentDoc, id: key });
 
       if (task) {
         const updatedTask: Task = { ...task, comment };
 
-        cache.writeData({ id: key, data: updatedTask });
+        await cache.writeData({ id: key, data: updatedTask });
       }
-    });
+    }
 
     return true;
   },
-  logout: async (parent, args, { cache }) => {
+  logout: async (parent, args, { cache, client }) => {
     localStorage.removeItem("token");
-    const token = {
-      id: 1,
-      value: "",
-      __typename: "Token" as const,
-    };
+    await client.resetStore();
 
-    cache.writeData({ data: token });
-
-    return token;
+    return true;
   },
 };
 

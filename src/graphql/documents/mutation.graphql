@@ -1,22 +1,13 @@
 mutation Auth($login: String!, $password: String!) {
-    auth(login: $login, password: $password) {
-        id
-        value
-    }
+    auth(login: $login, password: $password)
 }
 
 mutation Logout {
-    logout @client {
-        id
-        value
-    }
+    logout @client
 }
 
 mutation SaveToken($token: String!) {
-    saveToken(token: $token) @client {
-        id
-        value
-    }
+    saveToken(token: $token) @client
 }
 
 mutation SetTasksType($ids: [Int!]!, $type: TaskType!, $errorComment: String) {

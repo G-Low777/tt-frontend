@@ -39,8 +39,7 @@ const Login: React.FC<IProps> = ({ route, form: { getFieldDecorator, validateFie
     auth({ variables: getFieldsValue() as { login: string, password: string } })
       .then(response => {
         if (response && response.data && response.data.auth) {
-          localStorage.setItem("token", response.data.auth.value);
-          return saveToken({ variables: { token: response.data.auth.value }});
+          return saveToken({ variables: { token: response.data.auth }});
         }
       });
   };

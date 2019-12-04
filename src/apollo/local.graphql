@@ -19,13 +19,13 @@ extend type Task {
 }
 
 extend type Query {
-  "Возвращает токен авторизации, если он есть"
-  getToken: Token
+  "Проверяет, залогинен ли пользователь"
+  isLoggedIn: Boolean!
 }
 
 extend type Mutation {
   "Сохраняет токен авторизации в браузере"
-  saveToken(token: String!): Token!
+  saveToken(token: String!): Boolean!
   "Меняет тип задач и добавляет сообщение об ошибке"
   setTasksType(
     "Массив из ID задач, которым нужно поменять тип"
@@ -34,14 +34,14 @@ extend type Mutation {
     type: TaskType!
     "Комментарий, который нужно оставить к каждой задаче, если им назначается ошибочный тип"
     errorComment: String
-  ): Boolean
+  ): Boolean!
   "Добавляет комментарий к задачам"
   setTasksComment(
     "Массив из ID задач, которым нужно добавить комментарий"
     ids: [Int!]!
     "Комментарий, который нужно применить ко всем переданным задачам"
     comment: String
-  ): Boolean
+  ): Boolean!
   "Выход из системы"
-  logout: Token!
+  logout: Boolean!
 }

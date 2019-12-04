@@ -1,10 +1,9 @@
 import React, { useMemo } from "react";
-import { forEach } from "lodash";
 import { Tabs } from "antd";
 
 import useTitle from "../../hooks/useTitle";
 
-import { GetTasksQuery, Task, TaskType, useGetTasksQuery } from "../../graphql/generated";
+import { GetTasksQuery, TaskType, useGetTasksQuery } from "../../graphql/generated";
 
 import { Container, TabLine } from "./styles";
 import { IProps, TParsedTasks, TTableTask } from "./types";
@@ -12,7 +11,7 @@ import Table from "./Table";
 
 const TabPane = Tabs.TabPane;
 
-function parseTasks(tasksQuery?: GetTasksQuery, type?: TaskType): TParsedTasks {
+function parseTasks(tasksQuery?: GetTasksQuery): TParsedTasks {
   const parsedTasks: TParsedTasks = {
     all: [],
     wrong: [],
@@ -24,7 +23,10 @@ function parseTasks(tasksQuery?: GetTasksQuery, type?: TaskType): TParsedTasks {
     return parsedTasks;
   }
 
-  forEach<Task>(tasksQuery.tasks , task => {
+  const tasks = tasksQuery.tasks;
+  const tasksCount = tasks.length;
+  for (let i: number = 0; i < tasksCount; i++) {
+    const task = tasks[i];
     const parsedTask: TTableTask = {
       ...task,
       key: task.id,
@@ -36,7 +38,7 @@ function parseTasks(tasksQuery?: GetTasksQuery, type?: TaskType): TParsedTasks {
       case (TaskType.Correct): parsedTasks.correct.push(parsedTask); break;
       case (TaskType.Solved): parsedTasks.solved.push(parsedTask); break;
     }
-  });
+  }
 
   return parsedTasks;
 }

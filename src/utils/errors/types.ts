@@ -4,3 +4,7 @@ export interface TErrorHandler {
   message: string;
   description: string;
 }
+
+export interface TErrorHandlers {
+  [key: string]: TErrorHandler;
+}
