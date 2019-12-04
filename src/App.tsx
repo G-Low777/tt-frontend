@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { renderRoutes } from "react-router-config";
 
 import TitleContext from "./decorators/TitleContext";
-import { useIsLoggedInQuery } from './graphql/generated';
+import { useIsLoggedInQuery } from "./graphql/generated";
 import unauthorized from "./routes/unauthorized";
 import authorized from "./routes/authorized";
 import { baseTitle } from "./utils/const";

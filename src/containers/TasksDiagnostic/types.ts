@@ -17,6 +17,8 @@ export interface IProps {
 
 export interface IContextMenuProps {
   task: Task;
+  onSetSolved(): void;
+  onSetWrong(): void;
 }
 
 export interface ITableProps {

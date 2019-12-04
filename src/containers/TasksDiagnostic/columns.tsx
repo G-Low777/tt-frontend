@@ -1,12 +1,14 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import moment from "moment";
 
 import { Task } from "../../graphql/generated";
 
 import ContextMenu from "./ContextMenu";
 import { BottomText, RowText, StackText, TopText } from "./styles";
+import { ColumnProps } from "antd/lib/table";
+import { TTableTask } from "./types";
 
-const columns = [
+const getColumns = (onSelectedRowKeysChange: Dispatch<SetStateAction<string[] | number[]>>) => [
   {
     title: "№ / ID",
     render(text: any, record: Task) {
@@ -66,10 +68,15 @@ const columns = [
     title: "",
     render(text: any, record: Task) {
       return (
-        <ContextMenu key="context-menu" task={record} />
+        <ContextMenu
+          key="context-menu"
+          task={record}
+          onSetSolved={() => onSelectedRowKeysChange([])}
+          onSetWrong={() => onSelectedRowKeysChange([])}
+        />
       );
     }
   }
-];
+] as ColumnProps<TTableTask>[];
 
-export default columns;
+export default getColumns;

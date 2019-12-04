@@ -15,31 +15,36 @@ import { ContextMenuItem, ContextMenuItems } from "./styles";
 import Modals from "./Modals";
 import { Tooltip } from "antd";
 
-const ContextMenu: React.FC<IContextMenuProps> = props => {
+const ContextMenu: React.FC<IContextMenuProps> = ({ task, onSetSolved, onSetWrong }) => {
   const [currentModal, setCurrentModal] = useState<"error" | "comment" | undefined>(
     undefined
   );
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [setSolved] = useSetTasksTypeMutation({
     variables: {
-      ids: [props.task.id],
+      ids: [task.id],
       type: TaskType.Solved,
     },
   });
-  const taskType = props.task.type;
+  const taskType = task.type;
 
   return (
     <>
       <ContextMenuItems key="container">
-        {
-          taskType === TaskType.Error || taskType === TaskType.Correct
-            ? <ContextMenuItem key="mark-correct" src={okGray} onClick={() => setSolved()} />
-            : null
-        }
-        <Tooltip placement="left" title={props.task.comment}>
+        {taskType === TaskType.Error || taskType === TaskType.Correct ? (
+          <ContextMenuItem
+            key="mark-correct"
+            src={okGray}
+            onClick={() => {
+              setSolved();
+              onSetSolved();
+            }}
+          />
+        ) : null}
+        <Tooltip placement="left" title={task.comment}>
           <ContextMenuItem
             key="add-comment"
-            src={props.task.comment ? commentRemove : plusGray}
+            src={task.comment ? commentRemove : plusGray}
             onClick={() => {
               setCurrentModal("comment");
               setModalVisible(true);
@@ -62,10 +67,15 @@ const ContextMenu: React.FC<IContextMenuProps> = props => {
       <Modals
         key="modals"
         type={currentModal}
-        tasksIds={[props.task.id]}
-        oldComment={props.task.comment || ""}
+        tasksIds={[task.id]}
+        oldComment={task.comment || ""}
         visible={isModalVisible}
-        onOk={() => setModalVisible(false)}
+        onOk={() => {
+          if (currentModal === "error") {
+            onSetWrong();
+          }
+          setModalVisible(false)
+        }}
         onCancel={() => setModalVisible(false)}
       />
     </>

@@ -68,14 +68,11 @@ const Modals: React.FC<IModalsProps> = ({
       okButtonProps={isError ? errorOkButtonProps : commentOkButtonProps}
       cancelButtonProps={cancelButtonProps}
       onOk={e => {
-        let promise: Promise<any> = isError ? setWrong() : setTaskComment();
-
-        promise.then(() => {
-          setComment("");
-          if (onOk) {
-            onOk(e);
-          }
-        });
+        isError ? setWrong() : setTaskComment();
+        setComment("");
+        if (onOk) {
+          onOk(e);
+        }
       }}
       onCancel={e => {
         setComment("");

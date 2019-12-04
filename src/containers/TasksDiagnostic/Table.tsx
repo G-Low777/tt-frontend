@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Table as AntTable } from "antd";
 
 import { ITableProps, TTableTask } from "./types";
 import TableActions from "./TableActions";
-import columns from "./columns";
+import getColumns from "./columns";
+import { ColumnProps } from "antd/lib/table";
 
 const Table: React.FC<ITableProps> = ({ tasks, loading, taskTypes }) => {
   const [selectedRowKeys, onSelectedRowKeysChange] = useState<string[] | number[]>([]);
+  const columns = useMemo<ColumnProps<TTableTask>[]>(
+    () => getColumns(onSelectedRowKeysChange),
+    [onSelectedRowKeysChange]
+  );
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectedRowKeysChange,
