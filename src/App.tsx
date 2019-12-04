@@ -13,17 +13,18 @@ const authRoutes = [authorized];
 const App: React.FC = () => {
   const loggedIn = useIsLoggedInQuery();
   const titleState = useState(baseTitle);
+  const title = titleState[0];
   const isAuthorized = loggedIn.data && loggedIn.data.isLoggedIn;
 
   useEffect(() => {
-    let title = titleState[0];
-
     if (title === baseTitle) {
-      title = "";
+      document.title = baseTitle;
+
+      return;
     }
 
     document.title = title + (title && title.length > 0 ? " – " : "") + baseTitle;
-  }, [titleState[0]]);
+  }, [title]);
 
   return (
     <TitleContext.Provider value={titleState}>
